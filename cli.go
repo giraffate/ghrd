@@ -22,6 +22,12 @@ const (
 
 	// Errors starts from 10
 	ExitCodeParseFlagsError = 10 + iota
+	// TODO
+	// Add exit code for errors
+)
+
+const (
+	defaultBaseURL = "https://api.github.com"
 )
 
 // CLI is the command line object.
@@ -62,10 +68,12 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	// Set base GitHub API. Base URL can be provided via env var, this is for GHE.
-	baseURLStr := "https://api.github.com"
+	baseURLStr := defaultBaseURL
 	if urlStr := os.Getenv(EnvGitHubAPI); len(urlStr) > 0 {
 		baseURLStr = urlStr
 	}
+	// TODO
+	// Remove trailing slash as default and return no error.
 	if baseURLStr[len(baseURLStr)-1] == '/' {
 		log.Fatalf("Remove trailing slash from base URL: %s\n", baseURLStr)
 	}

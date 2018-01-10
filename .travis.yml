@@ -1,0 +1,9 @@
+language: go
+
+go:
+  - 1.9
+
+script:
+  - (! gofmt -s -d . | grep '^')
+  - go vet ./...
+  - go test ./...

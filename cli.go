@@ -27,6 +27,7 @@ const (
 	ExitCodeInvalidArgs
 	ExitCodeTagNotFound
 	ExitCodeAssetIDNotFound
+	ExitCodeRemoveFileError
 	ExitCodeOpenFileError
 	ExitCodeAssetNotFound
 )
@@ -124,6 +125,13 @@ func (cli *CLI) Run(args []string) int {
 	}
 	Debugf("Asset ID: %d", id)
 
+	// Remove file before creating to avoid error, text file busy.
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", filepath, name)); err == nil {
+		if err := os.Remove(fmt.Sprintf("%s/%s", filepath, name)); err != nil {
+			Debugf("Error: %s", err)
+			return ExitCodeRemoveFileError
+		}
+	}
 	file, err := os.OpenFile(fmt.Sprintf("%s/%s", filepath, name), os.O_WRONLY|os.O_CREATE, 0777)
 	if err != nil {
 		Debugf("Error: %s", err)

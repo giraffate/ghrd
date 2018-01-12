@@ -16,14 +16,14 @@ type GitHubClient struct {
 }
 
 // NewGitHubClient is the constructor of GitHubClient.
-func NewGitHubClient(owner, repo, token, urlStr string) (*GitHubClient, error) {
+func NewGitHubClient(owner, repo, token, urlStr string) *GitHubClient {
 	return &GitHubClient{
 		owner:  owner,
 		repo:   repo,
 		token:  token,
 		urlStr: urlStr,
 		Client: &http.Client{},
-	}, nil
+	}
 }
 
 // RepositoryTag represents a repository tag.

@@ -22,8 +22,11 @@ const (
 
 	// Errors starts from 10
 	ExitCodeParseFlagsError = 10 + iota
-	// TODO
-	// Add exit code for errors
+	ExitCodeInvalidArgs
+	ExitCodeTagNotFound
+	ExitCodeAssetIDNotFound
+	ExitCodeOpenFileError
+	ExitCodeAssetNotFound
 )
 
 const (
@@ -78,35 +81,32 @@ func (cli *CLI) Run(args []string) int {
 		log.Fatalf("Remove trailing slash from base URL: %s\n", baseURLStr)
 	}
 
-	gc, err := NewGitHubClient(owner, repo, token, baseURLStr)
-	if err != nil {
-		log.Fatalf("%v\n", err)
-	}
+	gc := NewGitHubClient(owner, repo, token, baseURLStr)
 
 	var tag string
 	parsedArgs := flags.Args()
 	if len(parsedArgs) > 2 {
-		log.Fatalln("Invalid argument: you can only set TAG.")
+		return ExitCodeInvalidArgs
 	} else if len(parsedArgs) == 1 {
 		tag = parsedArgs[0]
 	}
 
 	tag, err = gc.GetTag(tag)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return ExitCodeTagNotFound
 	}
 
 	id, name, err := gc.GetLatestAssetID(tag)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return ExitCodeAssetIDNotFound
 	}
 
 	file, err := os.OpenFile(fmt.Sprintf("%s/%s", filepath, name), os.O_WRONLY|os.O_CREATE, 0777)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return ExitCodeOpenFileError
 	}
 	if err = gc.GetAsset(id, file); err != nil {
-		log.Fatalf("%v\n", err)
+		return ExitCodeAssetNotFound
 	}
 
 	return ExitCodeOK

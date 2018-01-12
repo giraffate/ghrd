@@ -75,10 +75,8 @@ func (cli *CLI) Run(args []string) int {
 	if urlStr := os.Getenv(EnvGitHubAPI); len(urlStr) > 0 {
 		baseURLStr = urlStr
 	}
-	// TODO
-	// Remove trailing slash as default and return no error.
 	if baseURLStr[len(baseURLStr)-1] == '/' {
-		log.Fatalf("Remove trailing slash from base URL: %s\n", baseURLStr)
+		baseURLStr = baseURLStr[:len(baseURLStr)-1]
 	}
 
 	gc := NewGitHubClient(owner, repo, token, baseURLStr)

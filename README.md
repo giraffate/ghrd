@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/giraffate/ghrd.svg?branch=master)](https://travis-ci.org/giraffate/ghrd)
+
 # ghrd
 `ghrd` download an asset from GitHub Release.
 
